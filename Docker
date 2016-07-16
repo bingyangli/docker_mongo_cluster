@@ -1,0 +1,33 @@
+sudo docker build -t bing/mongod:master .
+sudo docker build -t bing/mongos:master .
+
+#replica set 1
+
+docker run --net="host" -v /home/core/mongo-files:/opt/keyfile --name shard1_1  -d bing/mongod:master  --smallfiles --replSet shard1
+
+docker run --net="host" -v /home/core/mongo-files:/opt/keyfile --name shard1_2  -d bing/mongod:master  --smallfiles --replSet shard1
+
+docker run --net="host" -v /home/core/mongo-files:/opt/keyfile --name shard1_3  -d bing/mongod:master  --smallfiles --replSet shard1
+
+#replica set 2
+
+docker run --net="host" -v /home/core/mongo-files:/opt/keyfile --name shard2_1  -d bing/mongod:master  --smallfiles --replSet shard2
+
+docker run --net="host" -v /home/core/mongo-files:/opt/keyfile --name shard2_2  -d bing/mongod:master  --smallfiles --replSet shard2
+
+docker run --net="host" -v /home/core/mongo-files:/opt/keyfile --name shard2_3  -d bing/mongod:master  --smallfiles --replSet shard2
+
+
+# config server
+
+docker run --net="host" --name cfg1 -v /home/core/mongo-files:/opt/keyfile  -d bing/mongod:master  --smallfiles --configsvr  --dbpath /data/db --port 27017
+
+docker run --net="host" --name cfg2 -v /home/core/mongo-files:/opt/keyfile  -d bing/mongod:master  --smallfiles --configsvr  --dbpath /data/db --port 27017
+
+docker run --net="host" --name cfg3 -v /home/core/mongo-files:/opt/keyfile  -d bing/mongod:master  --smallfiles --configsvr  --dbpath /data/db --port 27017
+
+# routes
+sudo docker run --name mongos_router -v /home/core/mongo-files:/opt/keyfile -p 27017:27017 -d bing/mongos:master --configdb csReplSet/cfg1:27017,cfg1:27017,cfg1:27017 --port 27017
+
+
+
