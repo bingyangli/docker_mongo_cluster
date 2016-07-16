@@ -30,4 +30,6 @@ docker run --net="host" --name cfg3 -v /home/core/mongo-files:/opt/keyfile  -d b
 sudo docker run --name mongos_router -v /home/core/mongo-files:/opt/keyfile -p 27017:27017 -d bing/mongos:master --configdb csReplSet/cfg1:27017,cfg1:27017,cfg1:27017 --port 27017
 
 
+docker exec -it mongo_router /bin/bash
+
 
