@@ -22,7 +22,7 @@ sudo docker run --net="host" --name cfg2 -v /home/core/mongodb-keyfile:/opt/keyf
 sudo docker run --net="host" --name cfg3 -v /home/core/mongodb-keyfile:/opt/keyfile/mongodb-keyfile -v /home/core/data:/data/db  -d bing/mongod:master  --smallfiles --keyFile /opt/keyfile/mongodb-keyfile --replSet csReplSet --configsvr --storageEngine wiredTiger  --dbpath /data/db --port 27017 
 
 # routes
-sudo docker run --net="host" --name mongos_router -v /home/core/mongodb-keyfile:/opt/keyfile/mongodb-keyfile -v /home/core/data:/data/db  -p 27017:27017 -d bing/mongos:master --configdb csReplSet/cfg1:27017,cfg2:27017,cfg3:27017 --port 27017
+sudo docker run --net="host" --name mongos_router --log-opt max-size=50m -v /home/core/mongodb-keyfile:/opt/keyfile/mongodb-keyfile -v /home/core/data:/data/db  -p 27017:27017 -d bing/mongos:master --configdb csReplSet/cfg1:27017,cfg2:27017,cfg3:27017 --port 27017 --keyFile /opt/keyfile/mongodb-keyfile
 
 
 sudo docker exec -it mongos_router /bin/bash
